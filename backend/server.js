@@ -8,6 +8,24 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
 
+// Helper: Validate FRONTEND_URL
+function getAllowedOrigins() {
+  const frontendUrl = process.env.FRONTEND_URL || '';
+  // Allow comma-separated list for multiple origins
+  const origins = frontendUrl.split(',').map(url => url.trim()).filter(Boolean);
+  if (origins.length === 0) {
+    console.warn('[CORS] No FRONTEND_URL set. Defaulting to http://localhost:3000');
+    return ['http://localhost:3000'];
+  }
+  // Warn if protocol is missing
+  origins.forEach(origin => {
+    if (!origin.startsWith('http://') && !origin.startsWith('https://')) {
+      console.warn(`[CORS] FRONTEND_URL should include protocol (http/https): ${origin}`);
+    }
+  });
+  return origins;
+}
+
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const meetingRoutes = require('./routes/meetings');
@@ -21,7 +39,7 @@ const server = createServer(app);
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: getAllowedOrigins(),
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -41,7 +59,7 @@ app.use('/api/', limiter);
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: getAllowedOrigins(),
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -109,6 +127,10 @@ server.listen(PORT, HOST, () => {
   console.log(`📱 Socket.IO server ready`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
   console.log(`🔗 Local network access: http://${HOST}:${PORT}`);
+  console.log(`[CORS] Allowed origins:`, getAllowedOrigins());
+  if (!process.env.FRONTEND_URL) {
+    console.warn('[CORS] FRONTEND_URL is not set. Set it in your environment variables for production!');
+  }
 });
 
 // Graceful shutdown
