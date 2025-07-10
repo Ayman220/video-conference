@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Badge, Modal } from '../components/ui';
-import { 
-  FiMic, 
-  FiMicOff, 
-  FiVideo, 
-  FiVideoOff, 
-  FiPhone, 
-  FiMessageSquare, 
-  FiUsers, 
+import {
+  FiMic,
+  FiMicOff,
+  FiVideo,
+  FiVideoOff,
+  FiPhone,
+  FiMessageSquare,
+  FiUsers,
   FiSettings,
   FiShare,
   FiCopy
@@ -24,7 +24,7 @@ const Meeting = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, user } = useAuthStore();
-  
+
   // Get URL parameters for guest access
   const urlParams = new URLSearchParams(location.search);
   const isGuest = urlParams.get('guest') === 'true';
@@ -32,7 +32,7 @@ const Meeting = () => {
 
   // Debug: Log guest detection, auth state, and URL
   console.log('Meeting page loaded. isGuest:', isGuest, 'isAuthenticated:', isAuthenticated, 'location.search:', location.search, 'URL:', window.location.href);
-  
+
   // State
   const [meeting, setMeeting] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -99,16 +99,16 @@ const Meeting = () => {
           video: isVideoEnabled,
           audio: isAudioEnabled
         });
-        
+
         setLocalStream(stream);
         localStreamRef.current = stream;
         console.log('[DEBUG] localStream set:', stream);
-        
+
         // Set local video stream
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-        
+
         // Process any pending peers
         if (pendingPeers.current.length > 0) {
           pendingPeers.current.forEach(({ userId, username, isGuest }) => {
@@ -141,27 +141,31 @@ const Meeting = () => {
           });
           pendingPeers.current = [];
         }
-        
+
         // Connect to signaling server
         const userId = isGuest ? `guest-${Date.now()}` : `user-${Date.now()}`;
         myUserId.current = userId; // Store current user's userId
         const userName = isGuest ? guestName : (user?.name || 'User');
         // Debug: Log userName and user object before socket connection
         console.log('Connecting socket with userName:', userName, 'user:', user);
-        
+
         // Use meeting.id from the fetched meeting data to ensure consistency
         const meetingId = meeting.id;
         console.log('Connecting to socket with meeting ID:', meetingId);
-        
-        const newSocket = io(window.APP_CONFIG?.SOCKET_URL || process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000', {
-          query: { 
-            meetingId: meetingId, 
+
+        const newSocket = io(
+          window.APP_CONFIG?.SOCKET_URL ||
+          process.env.REACT_APP_SOCKET_URL ||
+          'http://localhost:5000', {
+          transports: ['websocket'],
+          query: {
+            meetingId: meetingId,
             userId: userId,
             userName: userName,
             isGuest: isGuest
           }
         });
-        
+
         // Wait for socket connection before setting up handlers
         newSocket.on('connect', () => {
           console.log('Connected to signaling server for meeting:', meetingId);
@@ -334,21 +338,21 @@ const Meeting = () => {
 
           console.log('Joining meeting room:', meetingId);
           newSocket.emit('join-meeting', { meetingId: meetingId });
-          
+
           // Debug: Check active meetings
           setTimeout(() => {
             newSocket.emit('debug-meetings');
           }, 1000);
-          
+
           // Add current user to participants list
-          setParticipants(prev => prev.some(p => p.id === userId) ? prev : [...prev, { 
-            id: userId, 
-            name: userName, 
+          setParticipants(prev => prev.some(p => p.id === userId) ? prev : [...prev, {
+            id: userId,
+            name: userName,
             isGuest: isGuest,
-            isCurrentUser: true 
+            isCurrentUser: true
           }]);
         });
-        
+
         setSocket(newSocket);
 
         return () => {
@@ -370,7 +374,7 @@ const Meeting = () => {
     };
 
     const cleanup = initializeMedia();
-    
+
     // Return cleanup function
     return () => {
       cleanup.then(cleanupFn => {
@@ -434,7 +438,7 @@ const Meeting = () => {
           console.log('Stopped track on page unload:', track.kind);
         });
       }
-      
+
       // Stop screen share if active
       if (isScreenSharing && screenShareRef.current) {
         const screenTracks = screenShareRef.current.getTracks();
@@ -443,14 +447,14 @@ const Meeting = () => {
           console.log('Stopped screen share track on page unload:', track.kind);
         });
       }
-      
+
       // Destroy all peer connections
       Object.values(peers).forEach(peer => {
         if (peer && typeof peer.destroy === 'function') {
           peer.destroy();
         }
       });
-      
+
       // Disconnect socket
       if (socket) {
         socket.disconnect();
@@ -462,7 +466,7 @@ const Meeting = () => {
     return () => {
       // Remove event listener
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      
+
       // Ensure all media streams are stopped when component unmounts
       if (localStream) {
         localStream.getTracks().forEach(track => {
@@ -470,14 +474,14 @@ const Meeting = () => {
           console.log('Stopped track on unmount:', track.kind);
         });
       }
-      
+
       // Stop all peer connections
       Object.values(peers).forEach(peer => {
         if (peer && typeof peer.destroy === 'function') {
           peer.destroy();
         }
       });
-      
+
       // Disconnect socket
       if (socket) {
         socket.disconnect();
@@ -514,22 +518,22 @@ const Meeting = () => {
         const screenStream = await navigator.mediaDevices.getDisplayMedia({
           video: true
         });
-        
+
         // Store screen stream reference for cleanup
         screenShareRef.current = screenStream;
-        
+
         const videoTrack = screenStream.getVideoTracks()[0];
         const sender = Object.values(peers).find(peer => peer.getSenders)?.getSenders()
           .find(s => s.track?.kind === 'video');
-        
+
         if (sender) {
           sender.replaceTrack(videoTrack);
         }
-        
+
         setLocalStream(screenStream);
         localStreamRef.current = screenStream; // Update ref
         setIsScreenSharing(true);
-        
+
         videoTrack.onended = () => {
           console.log('Screen share ended by user');
           toggleScreenShare();
@@ -543,20 +547,20 @@ const Meeting = () => {
           });
           screenShareRef.current = null;
         }
-        
+
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: isAudioEnabled
         });
-        
+
         const videoTrack = stream.getVideoTracks()[0];
         const sender = Object.values(peers).find(peer => peer.getSenders)?.getSenders()
           .find(s => s.track?.kind === 'video');
-        
+
         if (sender) {
           sender.replaceTrack(videoTrack);
         }
-        
+
         setLocalStream(stream);
         localStreamRef.current = stream; // Update ref
         setIsScreenSharing(false);
@@ -569,7 +573,7 @@ const Meeting = () => {
 
   const leaveMeeting = () => {
     console.log('Leaving meeting, cleaning up media streams...');
-    
+
     // Stop all local media tracks
     if (localStream) {
       localStream.getTracks().forEach(track => {
@@ -578,7 +582,7 @@ const Meeting = () => {
       });
       setLocalStream(null);
     }
-    
+
     // Stop screen share if active
     if (isScreenSharing && screenShareRef.current) {
       const screenTracks = screenShareRef.current.getTracks();
@@ -588,7 +592,7 @@ const Meeting = () => {
       });
       setIsScreenSharing(false);
     }
-    
+
     // Destroy all peer connections
     Object.values(peers).forEach(peer => {
       if (peer && typeof peer.destroy === 'function') {
@@ -597,10 +601,10 @@ const Meeting = () => {
       }
     });
     setPeers({});
-    
+
     // Clear remote streams
     setRemoteStreams({});
-    
+
     // Disconnect socket
     if (socket) {
       if (meeting && meeting.id) {
@@ -609,19 +613,19 @@ const Meeting = () => {
       socket.disconnect();
       setSocket(null);
     }
-    
+
     // Clear video refs
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = null;
     }
-    
+
     Object.values(remoteVideosRef.current).forEach(videoRef => {
       if (videoRef) {
         videoRef.srcObject = null;
       }
     });
     remoteVideosRef.current = {};
-    
+
     console.log('Meeting cleanup completed');
     navigate('/dashboard');
   };
@@ -649,7 +653,7 @@ const Meeting = () => {
             {participants.length} participant{participants.length !== 1 ? 's' : ''}
           </span>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
@@ -760,7 +764,7 @@ const Meeting = () => {
           >
             {isAudioEnabled ? <FiMic className="w-5 h-5" /> : <FiMicOff className="w-5 h-5" />}
           </Button>
-          
+
           <Button
             variant={isVideoEnabled ? "outline" : "danger"}
             size="lg"
@@ -769,7 +773,7 @@ const Meeting = () => {
           >
             {isVideoEnabled ? <FiVideo className="w-5 h-5" /> : <FiVideoOff className="w-5 h-5" />}
           </Button>
-          
+
           <Button
             variant="outline"
             size="lg"
@@ -778,7 +782,7 @@ const Meeting = () => {
           >
             <FiShare className="w-5 h-5" />
           </Button>
-          
+
           <Button
             variant="danger"
             size="lg"
