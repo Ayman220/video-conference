@@ -34,6 +34,7 @@ const adminRoutes = require('./routes/admin');
 const { setupSocketHandlers } = require('./socket/socketHandlers');
 
 const app = express();
+app.set('trust proxy', 1);
 const server = createServer(app);
 
 // Socket.IO setup
