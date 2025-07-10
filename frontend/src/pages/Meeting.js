@@ -57,6 +57,11 @@ const Meeting = () => {
   const pendingPeers = useRef([]); // Queue for user-joined events when localStream is not ready
   const localStreamRef = useRef(null); // Ref for latest localStream
 
+  // Get TURN credentials from environment variables
+  const TURN_URL = process.env.REACT_APP_TURN_URL;
+  const TURN_USERNAME = process.env.REACT_APP_TURN_USERNAME;
+  const TURN_CREDENTIAL = process.env.REACT_APP_TURN_CREDENTIAL;
+
   // Fetch meeting details
   useEffect(() => {
     const fetchMeeting = async () => {
@@ -123,21 +128,11 @@ const Meeting = () => {
               config: {
                 iceServers: [
                   { urls: 'stun:stun.l.google.com:19302' },
-                  {
-                    urls: 'turn:openrelay.metered.ca:80',
-                    username: 'openrelayproject',
-                    credential: 'openrelayproject'
-                  },
-                  {
-                    urls: 'turn:openrelay.metered.ca:443',
-                    username: 'openrelayproject',
-                    credential: 'openrelayproject'
-                  },
-                  {
-                    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-                    username: 'openrelayproject',
-                    credential: 'openrelayproject'
-                  }
+                  ...(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL ? [
+                    { urls: `${TURN_URL}:80`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                    { urls: `${TURN_URL}:443`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                    { urls: `${TURN_URL}:443?transport=tcp`, username: TURN_USERNAME, credential: TURN_CREDENTIAL }
+                  ] : [])
                 ]
               }
             });
@@ -246,21 +241,11 @@ const Meeting = () => {
                     config: {
                       iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
-                        {
-                          urls: 'turn:openrelay.metered.ca:80',
-                          username: 'openrelayproject',
-                          credential: 'openrelayproject'
-                        },
-                        {
-                          urls: 'turn:openrelay.metered.ca:443',
-                          username: 'openrelayproject',
-                          credential: 'openrelayproject'
-                        },
-                        {
-                          urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-                          username: 'openrelayproject',
-                          credential: 'openrelayproject'
-                        }
+                        ...(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL ? [
+                          { urls: `${TURN_URL}:80`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                          { urls: `${TURN_URL}:443`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                          { urls: `${TURN_URL}:443?transport=tcp`, username: TURN_USERNAME, credential: TURN_CREDENTIAL }
+                        ] : [])
                       ]
                     }
                   });
@@ -303,21 +288,11 @@ const Meeting = () => {
               config: {
                 iceServers: [
                   { urls: 'stun:stun.l.google.com:19302' },
-                  {
-                    urls: 'turn:openrelay.metered.ca:80',
-                    username: 'openrelayproject',
-                    credential: 'openrelayproject'
-                  },
-                  {
-                    urls: 'turn:openrelay.metered.ca:443',
-                    username: 'openrelayproject',
-                    credential: 'openrelayproject'
-                  },
-                  {
-                    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-                    username: 'openrelayproject',
-                    credential: 'openrelayproject'
-                  }
+                  ...(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL ? [
+                    { urls: `${TURN_URL}:80`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                    { urls: `${TURN_URL}:443`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                    { urls: `${TURN_URL}:443?transport=tcp`, username: TURN_USERNAME, credential: TURN_CREDENTIAL }
+                  ] : [])
                 ]
               }
             });
@@ -361,21 +336,11 @@ const Meeting = () => {
                 config: {
                   iceServers: [
                     { urls: 'stun:stun.l.google.com:19302' },
-                    {
-                      urls: 'turn:openrelay.metered.ca:80',
-                      username: 'openrelayproject',
-                      credential: 'openrelayproject'
-                    },
-                    {
-                      urls: 'turn:openrelay.metered.ca:443',
-                      username: 'openrelayproject',
-                      credential: 'openrelayproject'
-                    },
-                    {
-                      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-                      username: 'openrelayproject',
-                      credential: 'openrelayproject'
-                    }
+                    ...(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL ? [
+                      { urls: `${TURN_URL}:80`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                      { urls: `${TURN_URL}:443`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                      { urls: `${TURN_URL}:443?transport=tcp`, username: TURN_USERNAME, credential: TURN_CREDENTIAL }
+                    ] : [])
                   ]
                 }
               });
@@ -478,21 +443,11 @@ const Meeting = () => {
           config: {
             iceServers: [
               { urls: 'stun:stun.l.google.com:19302' },
-              {
-                urls: 'turn:openrelay.metered.ca:80',
-                username: 'openrelayproject',
-                credential: 'openrelayproject'
-              },
-              {
-                urls: 'turn:openrelay.metered.ca:443',
-                username: 'openrelayproject',
-                credential: 'openrelayproject'
-              },
-              {
-                urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-                username: 'openrelayproject',
-                credential: 'openrelayproject'
-              }
+              ...(TURN_URL && TURN_USERNAME && TURN_CREDENTIAL ? [
+                { urls: `${TURN_URL}:80`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                { urls: `${TURN_URL}:443`, username: TURN_USERNAME, credential: TURN_CREDENTIAL },
+                { urls: `${TURN_URL}:443?transport=tcp`, username: TURN_USERNAME, credential: TURN_CREDENTIAL }
+              ] : [])
             ]
           }
         });
