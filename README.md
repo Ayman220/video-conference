@@ -30,7 +30,7 @@ A full-stack video conferencing application built with React.js, Node.js, WebRTC
 - **Database**: PostgreSQL
 - **Authentication**: JWT
 - **Real-time**: WebRTC, Socket.IO
-- **Deployment**: Heroku (Backend), Netlify (Frontend), ElephantSQL (Database)
+- **Deployment**: Render (Backend), Vercel (Frontend), Supabase (Database)
 
 ## 📁 Project Structure
 

@@ -119,7 +119,27 @@ const Meeting = () => {
             const peer = new Peer({
               initiator: true,
               trickle: false,
-              stream: stream
+              stream: stream,
+              config: {
+                iceServers: [
+                  { urls: 'stun:stun.l.google.com:19302' },
+                  {
+                    urls: 'turn:openrelay.metered.ca:80',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                  },
+                  {
+                    urls: 'turn:openrelay.metered.ca:443',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                  },
+                  {
+                    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                  }
+                ]
+              }
             });
             peer.on('signal', (data) => {
               console.log('[DEBUG] Peer signal event (offer) for', userId, data);
@@ -222,7 +242,27 @@ const Meeting = () => {
                   const peer = new Peer({
                     initiator: true,
                     trickle: false,
-                    stream: localStreamRef.current
+                    stream: localStreamRef.current,
+                    config: {
+                      iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        {
+                          urls: 'turn:openrelay.metered.ca:80',
+                          username: 'openrelayproject',
+                          credential: 'openrelayproject'
+                        },
+                        {
+                          urls: 'turn:openrelay.metered.ca:443',
+                          username: 'openrelayproject',
+                          credential: 'openrelayproject'
+                        },
+                        {
+                          urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                          username: 'openrelayproject',
+                          credential: 'openrelayproject'
+                        }
+                      ]
+                    }
                   });
                   peer.on('signal', (data) => {
                     console.log('[DEBUG] Peer signal event (offer) for', queuedId, data);
@@ -259,7 +299,27 @@ const Meeting = () => {
             const peer = new Peer({
               initiator: true,
               trickle: false,
-              stream: localStreamRef.current
+              stream: localStreamRef.current,
+              config: {
+                iceServers: [
+                  { urls: 'stun:stun.l.google.com:19302' },
+                  {
+                    urls: 'turn:openrelay.metered.ca:80',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                  },
+                  {
+                    urls: 'turn:openrelay.metered.ca:443',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                  },
+                  {
+                    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                    username: 'openrelayproject',
+                    credential: 'openrelayproject'
+                  }
+                ]
+              }
             });
 
             peer.on('signal', (data) => {
@@ -297,7 +357,27 @@ const Meeting = () => {
               peer = new Peer({
                 initiator: false,
                 trickle: false,
-                stream: localStreamRef.current
+                stream: localStreamRef.current,
+                config: {
+                  iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    {
+                      urls: 'turn:openrelay.metered.ca:80',
+                      username: 'openrelayproject',
+                      credential: 'openrelayproject'
+                    },
+                    {
+                      urls: 'turn:openrelay.metered.ca:443',
+                      username: 'openrelayproject',
+                      credential: 'openrelayproject'
+                    },
+                    {
+                      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                      username: 'openrelayproject',
+                      credential: 'openrelayproject'
+                    }
+                  ]
+                }
               });
 
               peer.on('signal', (data) => {
@@ -394,7 +474,27 @@ const Meeting = () => {
         const peer = new Peer({
           initiator: true,
           trickle: false,
-          stream: localStreamRef.current
+          stream: localStreamRef.current,
+          config: {
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              {
+                urls: 'turn:openrelay.metered.ca:80',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+              },
+              {
+                urls: 'turn:openrelay.metered.ca:443',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+              },
+              {
+                urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                username: 'openrelayproject',
+                credential: 'openrelayproject'
+              }
+            ]
+          }
         });
         peer.on('signal', (data) => {
           console.log('[DEBUG] Peer signal event (offer) for', userId, data);
