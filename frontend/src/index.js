@@ -1,3 +1,5 @@
+// Polyfill Node.js 'process' global for browser compatibility
+window.process = { env: {} };
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
